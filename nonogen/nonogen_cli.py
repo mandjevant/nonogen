@@ -1,3 +1,4 @@
+from generator import no_generator
 import click
 import sys
 import re
@@ -21,9 +22,7 @@ def nonogen(img, size, colour):
         click.echo("Only .png and .jpg files are accepted.")
         sys.exit()
 
-    print(f"Size of the nonogram: {size}\n"
-          f"Name of image source: {img}\n"
-          f"Colour nonogram?: {colour}")
+    no_generator(img_path=img, size=size, colour=colour).run()
 
 
 if __name__ == "__main__":
