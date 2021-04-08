@@ -1,12 +1,21 @@
 from PIL import Image, ImageDraw, ImageFont
-import numpy as np
 import traceback
 import typing
 import re
 
 
 class no_generator:
-    def __init__(self, img_path, size, colour):
+    """
+    Main nonogram generator class
+    """
+    def __init__(self, img_path: str, size: str, colour: bool):
+        """
+        Initiate variables for nonogram generator class
+         prepare initial variables
+        :param img_path: path to image | str
+        :param size: height and width of nonogram | str
+        :param colour: colour | bool
+        """
         self._img_path = img_path
         self._size = size.split("x")
         self._colour = colour
@@ -24,14 +33,29 @@ class no_generator:
 
     @staticmethod
     def r_g_b_to_hx(rgb: set) -> str:
+        """
+        Convert rgb to hex
+        :param rgb: (r, g, b) | set
+        :return: hex representation of rgb | str
+        """
         return "#%02x%02x%02x" % rgb
 
     @staticmethod
     def transpose(arr: list) -> list:
+        """
+        Transpose a two-dimensional array
+        :param arr: two-dimensional array | list
+        :return: transposed array | list
+        """
         return [[arr[j][i] for j in range(len(arr))] for i in range(len(arr[0]))]
 
     @staticmethod
     def _gen_indic_values(cleaned_list: list) -> list:
+        """
+        Generate indicative values based on pixel matrix
+        :param cleaned_list: list of indicative rgb values | list
+        :return: indicative values | list
+        """
         indic_list = list()
 
         for i in cleaned_list:
@@ -54,11 +78,13 @@ class no_generator:
         return indic_list
 
     def run(self) -> bool:
+        """
+        Main loop for nonogram generator
+        :return: True on success, False and stacktrace on failure | bool
+        """
         try:
             # Parse image and acquire pixel matrix
             self._resize()
-            # if not self._colour:
-            #     self._convert()
 
             self._pixel_matrix()
             self._clean_pixels()
@@ -67,11 +93,11 @@ class no_generator:
             self._indic_columns = no_generator._gen_indic_values(self._clean_columns)
 
             # Generate and save solution
-            # self._solution = self._new_image()
-            #
-            # self._fill_solution_grid()
-            # self._solution = self._visualize_grid(self._solution)
-            # self._save_solution()
+            self._solution = self._new_image()
+
+            self._fill_solution_grid()
+            self._solution = self._visualize_grid(self._solution)
+            self._save_solution()
 
             # Generate and save nonogram
             extra_height = max([len(column) for column in self._indic_columns])
@@ -93,6 +119,9 @@ class no_generator:
             return False
 
     def _clean_pixels(self) -> None:
+        """
+        Remove white pixels (not part of image) from pixel matrix
+        """
         if self._colour:
             for row in self._pixels:
                 clean_row = [pix for pix in row if pix != (255, 255, 255)]
@@ -106,6 +135,9 @@ class no_generator:
             self._clean_columns = no_generator.transpose(self._pixels)
 
     def _pixel_matrix(self) -> None:
+        """
+        Generate pixel matrix from PILLOW image
+        """
         pixels = list(self._img.getdata())
         self._pixels = [pixels[i * int(self._size[1]):(i + 1) * int(self._size[1])] for i in range(int(self._size[0]))]
 
@@ -116,12 +148,24 @@ class no_generator:
                         row[i] = (0, 0, 0)
 
     def _resize(self) -> None:
+        """
+        Resize image to desired nonogram size
+        """
         self._img = self._img.resize((int(self._size[0]), int(self._size[1])))
 
     def _convert(self) -> None:
+        """
+        Convert image to greyscale
+        """
         self._img = self._img.convert("1")
 
     def _new_image(self, width: typing.Optional[int] = None, height: typing.Optional[int] = None) -> Image:
+        """
+        Create new image using PILLOW
+        :param width: width of image | Optional[int]
+        :param height: height of image | Optional[int]
+        :return: new image | Image
+        """
         if width is None:
             width = (int(self._size[0]) + 2) * self._m
 
@@ -133,6 +177,13 @@ class no_generator:
         return img
 
     def _indic_boxes(self, img: Image, w_off: int, h_off: int) -> Image:
+        """
+        Main function for drawing indicative boxes on the nonogram
+        :param img: nonogram image | Image
+        :param w_off: width offset | int
+        :param h_off: height offset | int
+        :return: nonogram image | Image
+        """
         self._indic_columns = [[[0, (240, 240, 240)]] if col == [] else col for col in self._indic_columns]
         self._indic_rows = [[[0, (240, 240, 240)]] if row == [] else row for row in self._indic_rows]
 
@@ -142,6 +193,13 @@ class no_generator:
         return img
 
     def _draw_indic_columns(self, img: Image, w_off: int, h_off: int) -> Image:
+        """
+        Draw indicative boxes for columns on the nonogram
+        :param img: nonogram image | Image
+        :param w_off: width offset | int
+        :param h_off: height offset | int
+        :return: nonogram image | Image
+        """
         draw = ImageDraw.Draw(img, mode="RGB")
 
         column_counter = 0
@@ -206,6 +264,13 @@ class no_generator:
         return img
 
     def _draw_indic_rows(self, img: Image, w_off: int, h_off: int) -> Image:
+        """
+        Draw indicative boxes for rows on the nonogram
+        :param img: nonogram image | Image
+        :param w_off: width offset | int
+        :param h_off: height offset | int
+        :return: nonogram image | Image
+        """
         draw = ImageDraw.Draw(img, mode="RGB")
 
         row_counter = 0
@@ -270,7 +335,15 @@ class no_generator:
 
         return img
 
-    def _visualize_grid(self, img: Image, w_offset: typing.Optional[int] = 0, h_offset: typing.Optional[int] = 0) -> Image:
+    def _visualize_grid(self, img: Image, w_offset: typing.Optional[int] = 0,
+                        h_offset: typing.Optional[int] = 0) -> Image:
+        """
+        Visualize grid on solution and nonogram images
+        :param img: image to draw grid on | Image
+        :param w_offset: width offset | Optional[int]
+        :param h_offset: height offset | Optional[int]
+        :return: image with grid | Image
+        """
         draw = ImageDraw.Draw(img, mode="RGB")
 
         counter = 0
@@ -301,11 +374,15 @@ class no_generator:
         return img
 
     def _fill_solution_grid(self) -> None:
+        """
+        Fill grid on solution image
+        """
         draw = ImageDraw.Draw(self._solution, mode="RGB")
 
         for row_index in range(len(self._pixels)):
             for column_index in range(len(self._pixels[row_index])):
-                if self._pixels[row_index][column_index] != 255 and self._pixels[row_index][column_index] != (255, 255, 255):
+                if self._pixels[row_index][column_index] != 255 and \
+                        self._pixels[row_index][column_index] != (255, 255, 255):
                     if self._colour:
                         draw.rectangle([(self._m + column_index * self._m, self._m + row_index * self._m),
                                         (self._m + column_index * self._m + self._m,
@@ -319,12 +396,18 @@ class no_generator:
         del draw
 
     def _save_nonogram(self) -> None:
+        """
+        Save the nonogram image
+        """
         if self._colour:
             self._nonogram.save(f"nonograms/{self._filename}_colour_nonogram.png")
         else:
             self._nonogram.save(f"nonograms/{self._filename}_nonogram.png")
 
     def _save_solution(self) -> None:
+        """
+        Save the solution image
+        """
         if self._colour:
             self._solution.save(f"solutions/{self._filename}_colour_solution.png")
         else:
