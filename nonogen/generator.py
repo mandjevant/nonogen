@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import traceback
 import typing
@@ -80,6 +80,7 @@ class no_generator:
                                              height=(int(self._size[1]) + 2 + extra_height) * self._m)
 
             self._nonogram = self._visualize_grid(self._nonogram, extra_width * self._m, extra_height * self._m)
+            self._nonogram = self._indic_boxes(self._nonogram, extra_width * self._m, extra_height * self._m)
 
             self._save_nonogram()
 
@@ -131,6 +132,144 @@ class no_generator:
 
         return img
 
+    def _indic_boxes(self, img: Image, w_off: int, h_off: int) -> Image:
+        self._indic_columns = [[[0, (240, 240, 240)]] if col == [] else col for col in self._indic_columns]
+        self._indic_rows = [[[0, (240, 240, 240)]] if row == [] else row for row in self._indic_rows]
+
+        img = self._draw_indic_columns(img, w_off, h_off)
+        img = self._draw_indic_rows(img, w_off, h_off)
+
+        return img
+
+    def _draw_indic_columns(self, img: Image, w_off: int, h_off: int) -> Image:
+        draw = ImageDraw.Draw(img, mode="RGB")
+
+        column_counter = 0
+        for column in self._indic_columns:
+            if len(column) > 0:
+                box_counter = 0
+                for indic_c_box in column[::-1]:
+                    min_x = self._m + w_off + column_counter * self._m
+                    min_y = self._m + h_off - box_counter * self._m
+                    rect_fill = indic_c_box[1] if self._colour else (240, 240, 240)
+
+                    draw.rectangle(xy=[(min_x, min_y), (min_x + self._m, min_y - self._m)],
+                                   fill=rect_fill,
+                                   outline=(0, 0, 0))
+
+                    draw.line(((min_x, min_y), (min_x, min_y - self._m)), fill=(0, 0, 0))
+                    draw.line(((min_x, min_y), (min_x + self._m, min_y)), fill=(0, 0, 0))
+                    draw.line(((min_x, min_y + self._m), (min_x + self._m, min_y + self._m)), fill=(0, 0, 0))
+                    draw.line(((min_x + self._m, min_y), (min_x + self._m, min_y - self._m)), fill=(0, 0, 0))
+
+                    box_counter += 1
+
+                for y in range(len(column[::-1])):
+                    min_x = 1 + self._m + w_off + column_counter * self._m
+                    min_y = self._m + h_off - y * self._m
+                    rect_fill = column[::-1][y][1] if self._colour else (240, 240, 240)
+
+                    if column_counter % 5 == 0:
+                        draw.line(((min_x, min_y), (min_x, min_y - self._m)), width=2, fill=(0, 0, 0))
+
+                    if column_counter == len(self._indic_columns) - 1:
+                        draw.line(((min_x + self._m, min_y), (min_x + self._m, min_y - self._m)), width=2,
+                                  fill=(0, 0, 0))
+
+                    if y == len(column[::1]) - 1:
+                        draw.line(((min_x - 1, min_y - self._m), (min_x - 1 + self._m, min_y - self._m)), width=2,
+                                  fill=(0, 0, 0))
+
+                    draw.text(xy=(min_x + round(self._m/3, 0) if column[::-1][y][0] < 10
+                                  else min_x + round(self._m/6, 0),
+                                  min_y - 2*self._m/3),
+                              text=str(column[::-1][y][0]),
+                              font=ImageFont.truetype("arial.ttf", int(round(self._m / 2, 0))),
+                              fill=(0, 0, 0) if sum(rect_fill) > 350 else (255, 255, 255),
+                              align="center")
+
+                if column_counter != 0:
+                    beg_y = self._m + h_off - len(self._indic_columns[column_counter - 1]) * self._m
+                    end_y = self._m + h_off - len(self._indic_columns[column_counter]) * self._m
+                    if len(self._indic_columns[column_counter]) > len(self._indic_columns[column_counter - 1]):
+                        cal_x = 1 + self._m + w_off + column_counter * self._m
+                        draw.line(((cal_x, beg_y), (cal_x, end_y)), width=2, fill=(0, 0, 0))
+                    elif len(self._indic_columns[column_counter]) < len(self._indic_columns[column_counter - 1]):
+                        cal_x = self._m + w_off + column_counter * self._m
+                        draw.line(((cal_x, beg_y), (cal_x, end_y)), width=2, fill=(0, 0, 0))
+
+            column_counter += 1
+
+        del column_counter
+        del draw
+
+        return img
+
+    def _draw_indic_rows(self, img: Image, w_off: int, h_off: int) -> Image:
+        draw = ImageDraw.Draw(img, mode="RGB")
+
+        row_counter = 0
+        for row in self._indic_rows:
+            if len(row) > 0:
+                box_counter = 0
+                for indic_r_box in row[::-1]:
+                    min_x = self._m + w_off - box_counter * self._m
+                    min_y = self._m + h_off + row_counter * self._m
+                    rect_fill = indic_r_box[1] if self._colour else (240, 240, 240)
+
+                    draw.rectangle(xy=[(min_x, min_y), (min_x - self._m, min_y + self._m)],
+                                   fill=rect_fill,
+                                   outline=(0, 0, 0))
+
+                    draw.line(((min_x, min_y), (min_x, min_y + self._m)), fill=(0, 0, 0))
+                    draw.line(((min_x, min_y), (min_x - self._m, min_y)), fill=(0, 0, 0))
+                    draw.line(((min_x, min_y + self._m), (min_x - self._m, min_y + self._m)), fill=(0, 0, 0))
+                    draw.line(((min_x - self._m, min_y), (min_x - self._m, min_y + self._m)), fill=(0, 0, 0))
+
+                    box_counter += 1
+
+                for y in range(len(row[::-1])):
+                    min_x = 1 + self._m + w_off - y * self._m
+                    min_y = self._m + h_off + row_counter * self._m
+                    rect_fill = row[::-1][y][1] if self._colour else (240, 240, 240)
+
+                    if row_counter % 5 == 0:
+                        draw.line(((min_x, min_y + 1), (min_x - self._m, min_y + 1)), width=2, fill=(0, 0, 0))
+
+                    if row_counter == len(self._indic_rows) - 1:
+                        draw.line(((min_x, min_y + self._m + 1), (min_x - self._m, min_y + self._m + 1)), width=2,
+                                  fill=(0, 0, 0))
+
+                    if y == len(row[::1]) - 1:
+                        draw.line(((min_x - 1 - self._m, min_y), (min_x - 1 - self._m, min_y + self._m)), width=2,
+                                  fill=(0, 0, 0))
+
+                    draw.text(xy=(min_x - self._m + round(self._m/3, 0) if row[::-1][y][0] < 10
+                                  else min_x - self._m + round(self._m/6, 0),
+                                  min_y + self._m/4),
+                              text=str(row[::-1][y][0]),
+                              font=ImageFont.truetype("arial.ttf", int(round(self._m/2, 0))),
+                              fill=(0, 0, 0) if sum(rect_fill) > 350 else (255, 255, 255),
+                              align="center")
+
+                if row_counter != 0:
+                    beg_x = self._m + w_off - len(self._indic_rows[row_counter - 1]) * self._m
+                    end_x = self._m + w_off - len(self._indic_rows[row_counter]) * self._m
+
+                    if len(self._indic_rows[row_counter]) > len(self._indic_rows[row_counter - 1]):
+                        cal_y = 1 + self._m + h_off + row_counter * self._m
+                        draw.line(((beg_x, cal_y), (end_x, cal_y)), width=2, fill=(0, 0, 0))
+                    elif len(self._indic_rows[row_counter]) < len(self._indic_rows[row_counter - 1]):
+                        cal_y = self._m + h_off + row_counter * self._m
+                        draw.line(((beg_x, cal_y), (end_x, cal_y)), width=2, fill=(0, 0, 0))
+
+            row_counter += 1
+
+        del row_counter
+        del draw
+
+        return img
+
     def _visualize_grid(self, img: Image, w_offset: typing.Optional[int] = 0, h_offset: typing.Optional[int] = 0) -> Image:
         draw = ImageDraw.Draw(img, mode="RGB")
 
@@ -163,6 +302,7 @@ class no_generator:
 
     def _fill_solution_grid(self) -> None:
         draw = ImageDraw.Draw(self._solution, mode="RGB")
+
         for row_index in range(len(self._pixels)):
             for column_index in range(len(self._pixels[row_index])):
                 if self._pixels[row_index][column_index] != 255 and self._pixels[row_index][column_index] != (255, 255, 255):
