@@ -9,7 +9,7 @@ python3 -m nonogen_cli --img="input_images/cheese.jpg" --size=16x16 --colour
 
 ## Images
 
-![Input image](/nonogen/input_images/cheese.jpg?raw=true "Input image")
+![Input image](/nonogen/input_images/cheese.jpg?raw=true "Input image" =100x100)
 
 ![Colour nonogram](/nonogen/nonograms/cheese_colour_nonogram.png?raw=true "Colour nonogram")
 
