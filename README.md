@@ -9,15 +9,20 @@ python3 -m nonogen_cli --img="input_images/cheese.jpg" --size=16x16 --colour
 
 ## Images
 
-![Input image](/nonogen/input_images/cheese.jpg?raw=true "Input image" =100x100)
+**Input image**  
+<img src="/nonogen/input_images/cheese.jpg?raw=true" width="300" height="300">
 
-![Colour nonogram](/nonogen/nonograms/cheese_colour_nonogram.png?raw=true "Colour nonogram")
+**Colour nonogram**  
+<img src="/nonogen/nonograms/cheese_colour_nonogram.png?raw=true" width="300" height="300">
 
-![Black & white nonogram](/nonogen/nonograms/cheese_nonogram.png?raw=true "Black & white nonogram")
+**Black & white nonogram**  
+<img src="/nonogen/nonograms/cheese_nonogram.png?raw=true" width="300" height="300">
 
-![Colour solution](/nonogen/solutions/cheese_colour_solution.png?raw=true "Colour solution")
+**Colour solution**  
+<img src="/nonogen/solutions/cheese_colour_solution.png?raw=true" width="300" height="300">
 
-![Black & white solution](/nonogen/solutions/cheese_solution.png?raw=true "Black & white solution")
+**Black & white solution**  
+<img src="/nonogen/solutions/cheese_solution.png?raw=true" width="300" height="300">
 
 ## Contributing
 
