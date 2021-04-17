@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/ico" href="../static/images/favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% block description %}{% endblock %}
+    <meta name="author" content="P.T.C.M. Tholhuijsen">
+
+    <link rel="stylesheet" href="../static/css/base.css">
+    {% block imports %}{% endblock %}
+    {% block title %}{% endblock %}
+</head>
+<body>
+
+{% block content %}{% endblock %}
+
+<div class="footer">
+    <div class="footer-logo">
+         <img src="../static/images/icon.png" alt="">
+    </div>
+
+    <div class="footer-about" id="hide-footer-about">
+        <p>
+            <span>About</span>
+            Generate nonograms and solutions in colour or black and white. This website is made with Flask. The backend code also has cli functionality and is freely available on my <a href="https://github.com/mandjevant/nonogen/">github</a>.
+        </p>
+    </div>
+
+    <div class="footer-icons">
+        <a href="mailto:pimtholhuijsen@hotmail.com">
+            <i class="fa fa-envelope"></i>
+        </a>
+        <a href="https://github.com/mandjevant">
+            <i class="fa fa-github"></i>
+        </a>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="../static/js/smoothscroll.js"></script>
+</body>
+</html>
