@@ -1,7 +1,7 @@
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
-    background-color: #489ee6 !important;
+    background-image: url("../images/background.png");
     display: flex;
     justify-content: center;
 }
