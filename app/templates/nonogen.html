@@ -16,5 +16,13 @@
 <div class="container">
     <h1>Generate a Nonogram</h1>
     <p>The nonogram generator.</p>
+    <form action="{{ url_for('generate_nonogram') }}" method="POST" enctype="multipart/form-data">
+        {{ generate_nonogram_form.csrf_token }}
+        {{ generate_nonogram_form.image }}
+        {{ generate_nonogram_form.width }}
+        {{ generate_nonogram_form.height }}
+        {{ generate_nonogram_form.colour }}
+        {{ generate_nonogram_form.submit }}
+    </form>
 </div>
 {% endblock %}

@@ -6,6 +6,38 @@ body {
     justify-content: center;
 }
 
+.flashes {
+    z-index: 10;
+    display: flex;
+    background-color: #2f86ce;
+    box-shadow: 0 2px 5px rgba(0,0,0,.25), 0 0 16px rgba(0,0,0,.22);
+    border-radius: 35px;
+    padding: 65px;
+    color: white;
+    align-items: center;
+    position: absolute;
+    margin: 15%;
+    list-style-type: None;
+    font-size: large;
+    flex-direction: column;
+}
+
+
+.close {
+    z-index: inherit;
+    display: inline-block;
+    color: aliceblue;
+    font-size: 15px;
+    text-decoration: None;
+    border-radius: 10px;
+    width: inherit;
+    padding: 10px;
+    background-color: #141d26;
+    border-color: #2f86ce;
+    box-shadow: 0 2px 8px -4px rgba(90, 90, 90, 0.21);
+    margin-top: 8px;
+}
+
 .footer {
     display: flex;
     flex-direction: row;

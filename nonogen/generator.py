@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import traceback
 import typing
 import re
+import os
 
 
 class no_generator:
@@ -17,6 +18,9 @@ class no_generator:
         :param colour: colour | bool
         """
         self._img_path = img_path
+        self.base_path = os.path.normpath(
+            os.path.normpath(self._img_path + os.sep + os.pardir) + os.sep + os.pardir)
+
         self._size = size.split("x")
         self._colour = colour
 
@@ -400,15 +404,15 @@ class no_generator:
         Save the nonogram image
         """
         if self._colour:
-            self._nonogram.save(f"nonograms/{self._filename}_colour_nonogram.png")
+            self._nonogram.save(os.path.join(self.base_path, "nonograms", f"{self._filename}_colour_nonogram.png"))
         else:
-            self._nonogram.save(f"nonograms/{self._filename}_nonogram.png")
+            self._nonogram.save(os.path.join(self.base_path, "nonograms", f"{self._filename}_nonogram.png"))
 
     def _save_solution(self) -> None:
         """
         Save the solution image
         """
         if self._colour:
-            self._solution.save(f"solutions/{self._filename}_colour_solution.png")
+            self._solution.save(os.path.join(self.base_path, "solutions", f"{self._filename}_colour_solution.png"))
         else:
-            self._solution.save(f"solutions/{self._filename}_solution.png")
+            self._solution.save(os.path.join(self.base_path, "solutions", f"{self._filename}_solution.png"))

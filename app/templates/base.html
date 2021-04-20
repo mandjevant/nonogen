@@ -14,6 +14,16 @@
     {% block title %}{% endblock %}
 </head>
 <body>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class=flashes>
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        <button type="button" class="close" onclick="delete_flash(this)">close</button>
+        </div>
+    {% endif %}
+{% endwith %}
 
 {% block content %}{% endblock %}
 
@@ -42,5 +52,6 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="../static/js/smoothscroll.js"></script>
+<script src="../static/js/delete_flash.js"></script>
 </body>
 </html>
