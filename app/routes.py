@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, send_file, after_this_request, Response
+from flask import render_template, flash, redirect, url_for, Response
 from app.forms import generateNonogramForm
 from app import app
 from nonogen.generator import no_generator
