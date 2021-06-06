@@ -1,6 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
+from colorthief import ColorThief
 import traceback
 import typing
+import numpy
 import re
 import os
 
@@ -9,6 +11,7 @@ class no_generator:
     """
     Main nonogram generator class
     """
+
     def __init__(self, img_path: str, size: str, colour: bool):
         """
         Initiate variables for nonogram generator class
@@ -34,15 +37,6 @@ class no_generator:
         self._indic_rows = list()
         self._indic_columns = list()
         self._m = 32
-
-    @staticmethod
-    def r_g_b_to_hx(rgb: set) -> str:
-        """
-        Convert rgb to hex
-        :param rgb: (r, g, b) | set
-        :return: hex representation of rgb | str
-        """
-        return "#%02x%02x%02x" % rgb
 
     @staticmethod
     def transpose(arr: list) -> list:
@@ -81,16 +75,54 @@ class no_generator:
 
         return indic_list
 
+    @staticmethod
+    def color_distance(rgb1: numpy.ndarray, rgb2: numpy.ndarray) -> float:
+        """
+        Find the distance between two colors
+        :param rgb1: colour 1 | np.ndarray
+        :param rgb2: colour 2 | np.ndarray
+        :return: distance | float
+        """
+        rm = (rgb1[0] - rgb2[0]) >> 1
+        r, g, b = rgb1[0] - rgb2[0], rgb1[1] - rgb2[1], rgb1[2] - rgb2[2]
+        return numpy.sqrt((((512 + rm) * r * r) >> 8) + 4 * g * g + (((767 - rm) * b * b) >> 8))
+
+    def _rebase_on_palette(self) -> None:
+        """
+        Rebase the pixel matrix based on color palette
+        """
+        palette = ColorThief(self._img_path).get_palette(color_count=5)
+        palette.append((255, 255, 255))
+        for row in self._pixels:
+            for i in range(len(row)):
+                distances = [no_generator.color_distance(numpy.array(row[i]), color) for color in palette]
+                row[i] = palette[distances.index(min(distances))]
+
+    def _rebase_on_bw(self) -> None:
+        """
+        Rebase the black and white pixel matrix
+        """
+        for row in self._pixels:
+            for i in range(len(row)):
+                distance = abs(no_generator.color_distance(numpy.array(row[i]), numpy.array((255, 255, 255))))
+                if distance < 64:
+                    row[i] = (255, 255, 255)
+
     def run(self) -> bool:
         """
         Main loop for nonogram generator
         :return: True on success, False and stacktrace on failure | bool
         """
         try:
-            # Parse image and acquire pixel matrix
             self._resize()
 
             self._pixel_matrix()
+            if self._colour:
+                self._rebase_on_palette()
+            else:
+                self._rebase_on_bw()
+                self._convert()
+
             self._clean_pixels()
 
             self._indic_rows = no_generator._gen_indic_values(self._clean_rows)
@@ -145,12 +177,6 @@ class no_generator:
         pixels = list(self._img.getdata())
         self._pixels = [pixels[i * int(self._size[0]):(i + 1) * int(self._size[0])] for i in range(int(self._size[1]))]
 
-        if not self._colour:
-            for row in self._pixels:
-                for i in range(len(row)):
-                    if row[i] not in [(255, 255, 255), 255]:
-                        row[i] = (0, 0, 0)
-
     def _resize(self) -> None:
         """
         Resize image to desired nonogram size
@@ -159,9 +185,12 @@ class no_generator:
 
     def _convert(self) -> None:
         """
-        Convert image to greyscale
+        Convert pixel matrix to greyscale
         """
-        self._img = self._img.convert("1")
+        for row in self._pixels:
+            for i in range(len(row)):
+                if row[i] not in [(255, 255, 255), 255]:
+                    row[i] = (0, 0, 0)
 
     def _new_image(self, width: typing.Optional[int] = None, height: typing.Optional[int] = None) -> Image:
         """
@@ -242,9 +271,9 @@ class no_generator:
                         draw.line(((min_x - 1, min_y - self._m), (min_x - 1 + self._m, min_y - self._m)), width=2,
                                   fill=(0, 0, 0))
 
-                    draw.text(xy=(min_x + round(self._m/3, 0) if column[::-1][y][0] < 10
-                                  else min_x + round(self._m/6, 0),
-                                  min_y - 2*self._m/3),
+                    draw.text(xy=(min_x + round(self._m / 3, 0) if column[::-1][y][0] < 10
+                                  else min_x + round(self._m / 6, 0),
+                                  min_y - 2 * self._m / 3),
                               text=str(column[::-1][y][0]),
                               font=ImageFont.truetype("arial.ttf", int(round(self._m / 2, 0))),
                               fill=(0, 0, 0) if sum(rect_fill) > 350 else (255, 255, 255),
@@ -313,11 +342,11 @@ class no_generator:
                         draw.line(((min_x - 1 - self._m, min_y), (min_x - 1 - self._m, min_y + self._m)), width=2,
                                   fill=(0, 0, 0))
 
-                    draw.text(xy=(min_x - self._m + round(self._m/3, 0) if row[::-1][y][0] < 10
-                                  else min_x - self._m + round(self._m/6, 0),
-                                  min_y + self._m/4),
+                    draw.text(xy=(min_x - self._m + round(self._m / 3, 0) if row[::-1][y][0] < 10
+                                  else min_x - self._m + round(self._m / 6, 0),
+                                  min_y + self._m / 4),
                               text=str(row[::-1][y][0]),
-                              font=ImageFont.truetype("arial.ttf", int(round(self._m/2, 0))),
+                              font=ImageFont.truetype("arial.ttf", int(round(self._m / 2, 0))),
                               fill=(0, 0, 0) if sum(rect_fill) > 350 else (255, 255, 255),
                               align="center")
 
