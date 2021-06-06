@@ -143,7 +143,7 @@ class no_generator:
         Generate pixel matrix from PILLOW image
         """
         pixels = list(self._img.getdata())
-        self._pixels = [pixels[i * int(self._size[1]):(i + 1) * int(self._size[1])] for i in range(int(self._size[0]))]
+        self._pixels = [pixels[i * int(self._size[0]):(i + 1) * int(self._size[0])] for i in range(int(self._size[1]))]
 
         if not self._colour:
             for row in self._pixels:
