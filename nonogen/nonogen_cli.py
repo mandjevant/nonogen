@@ -18,6 +18,13 @@ import re
               help="Type of nonogram. Default black and white.",
               default=False)
 def nonogen(img, size, colour):
+    """
+    Handles cli using click
+     calls main class for nonogram generation
+    :param img: image path | str
+    :param size: size of nonogram | str
+    :param colour: type of nonogram | bool
+    """
     if not re.search(r"\.(jpg|png)", img):
         click.echo("Only .png and .jpg files are accepted.")
         sys.exit()

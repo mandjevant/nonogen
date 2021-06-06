@@ -128,4 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# pycharm .idea folder
 .idea
+
+# Configuration file
+conf.ini
