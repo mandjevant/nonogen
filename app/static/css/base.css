@@ -1,7 +1,8 @@
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
-    background-image: url("../images/background.png");
+    background: url("../images/background.png") repeat-y center top;
+    background-size: cover;
     display: flex;
     justify-content: center;
 }
@@ -48,7 +49,7 @@ body {
     background-color: #c9c9c9;
 
     bottom: 0;
-    height: 150px;
+    height: 8vw;
     width: 100%;
 
     text-align: left;
@@ -96,16 +97,22 @@ body {
 }
 
 .footer-icons {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
     margin-top: 37px;
     margin-right: 100px;
     z-index: 1;
     max-width: 15%;
     margin-left: 10%;
+    align-items: center;
 }
 
 .footer-icons a {
     display: flex;
     flex-direction: column;
+    flex-shrink: initial;
+
     width: 35px;
     height: 35px;
     cursor: pointer;
@@ -120,11 +127,13 @@ body {
     margin-bottom: 5px;
 }
 
+
 @media screen and (max-width: 820px) {
     #hide-footer-about {
         display: none;
     }
     .footer-icons {
         margin-right: 50px;
+        margin-bottom: 5px;
     }
 }
