@@ -1,8 +1,9 @@
-from flask import render_template, flash, redirect, url_for, send_file
+from flask import render_template, flash, redirect, url_for, send_file, after_this_request
 from app.forms import generateNonogramForm
 from app import app
 from nonogen.generator import no_generator
 from werkzeug.utils import secure_filename
+import zipfile
 import os
 
 
@@ -28,9 +29,6 @@ def generate_nonogram():
             , "input_images", filename)
         image.save(img_path)
 
-        base_path = os.path.normpath(
-                        os.path.normpath(img_path + os.sep + os.pardir) + os.sep + os.pardir)
-
         run_result = no_generator(img_path=img_path,
                                   size=f"{generate_nonogram_form.width.data}x{generate_nonogram_form.height.data}",
                                   colour=generate_nonogram_form.colour.data).run()
@@ -38,32 +36,42 @@ def generate_nonogram():
         if run_result:
             os.remove(img_path)
 
-            no_path = f"{filename}_nonogram"
-            so_path = f"{filename}_solution"
+            filename = filename.split(".")[0]
+
+            base_path = os.path.normpath(
+                os.path.normpath(img_path + os.sep + os.pardir) + os.sep + os.pardir)
 
             if generate_nonogram_form.colour.data:
-                no_path = f"{filename}_colour_nonogram"
-                so_path = f"{filename}_colour_solution"
+                no_join = os.path.join(base_path, "nonograms", f"{filename}_colour_nonogram.png")
+                so_join = os.path.join(base_path, "solutions", f"{filename}_colour_solution.png")
+            else:
+                no_join = os.path.join(base_path, "nonograms", f"{filename}_nonogram.png")
+                so_join = os.path.join(base_path, "solutions", f"{filename}_solution.png")
 
-            no_join = os.path.join(base_path, "nonograms", no_path)
-            so_join = os.path.join(base_path, "solutions", so_path)
+            files_zip = zipfile.ZipFile(os.path.join(base_path, f"{filename}.zip"), "w", zipfile.ZIP_DEFLATED)
+            files_zip.write(no_join, os.path.basename(no_join))
+            files_zip.write(so_join, os.path.basename(so_join))
+            files_zip.close()
 
-            return redirect(url_for("send_files", no_path=no_join, so_path=so_join, filename=filename))
+            os.remove(no_join)
+            os.remove(so_join)
 
+            @after_this_request
+            def remove_file(response):
+                try:
+                    os.remove(os.path.join(base_path, f"{filename}.zip"))
+                    return redirect(url_for("index"))
+                except Exception as e:
+                    app.logger.error("Error removing or closing zip file.", e)
+                return response
+
+            return send_file(os.path.join(base_path, f"{filename}.zip"),
+                             mimetype="zip",
+                             attachment_filename=f"{filename}_nonogram.zip",
+                             as_attachment=True)
         else:
             flash("Something went wrong. Please try again or contact the maintainer of the website.")
 
     flash(generate_nonogram_form.errors)
 
     return redirect(url_for("index"))
-
-
-@app.route("/download_files")
-def send_files(no_path, so_path, filename):
-    send_file(no_path, attachment_filename=f"{filename}_solution.png")
-    send_file(so_path, attachment_filename=f"{filename}_nonogram.png")
-
-    os.remove(no_path)
-    os.remove(so_path)
-
-    flash("Succes!")
