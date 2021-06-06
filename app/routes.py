@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, send_file, after_this_request
+from flask import render_template, flash, redirect, url_for, send_file, after_this_request, Response
 from app.forms import generateNonogramForm
 from app import app
 from nonogen.generator import no_generator
@@ -56,19 +56,15 @@ def generate_nonogram():
             os.remove(no_join)
             os.remove(so_join)
 
-            @after_this_request
-            def remove_file(response):
-                try:
-                    os.remove(os.path.join(base_path, f"{filename}.zip"))
-                    return redirect(url_for("index"))
-                except Exception as e:
-                    app.logger.error("Error removing or closing zip file.", e)
-                return response
+            with open(os.path.join(base_path, f"{filename}.zip"), "rb") as f:
+                data = f.readlines()
 
-            return send_file(os.path.join(base_path, f"{filename}.zip"),
-                             mimetype="zip",
-                             attachment_filename=f"{filename}_nonogram.zip",
-                             as_attachment=True)
+            os.remove(os.path.join(base_path, f"{filename}.zip"))
+
+            return Response(data, headers={
+                "Content-Type": "application/zip",
+                "Content-Disposition": f"attachment; filename={filename}_nonogram.zip;"
+            })
         else:
             flash("Something went wrong. Please try again or contact the maintainer of the website.")
 
