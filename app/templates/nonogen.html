@@ -6,6 +6,9 @@
 
 {% block imports %}
 <link rel="stylesheet" href="../static/css/nonogen.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="../static/js/choose_file.js"></script>
+<script src="../static/js/is_checked.js"></script>
 {% endblock %}
 
 {% block title %}
@@ -14,15 +17,79 @@
 
 {% block content %}
 <div class="container">
-    <h1>Generate a Nonogram</h1>
-    <p>The nonogram generator.</p>
-    <form action="{{ url_for('generate_nonogram') }}" method="POST" enctype="multipart/form-data">
+    <div class="title_box">
+        <img class="form_logo" src="../static/images/icon.png" alt="Nonogen icon">
+        <h1>Generate a Nonogram</h1>
+    </div>
+    <form class="gen_form" action="{{ url_for('generate_nonogram') }}" method="POST" enctype="multipart/form-data">
         {{ generate_nonogram_form.csrf_token }}
-        {{ generate_nonogram_form.image }}
-        {{ generate_nonogram_form.width }}
-        {{ generate_nonogram_form.height }}
-        {{ generate_nonogram_form.colour }}
+
+        <fieldset class="form-field">
+            <div class="info">
+                <h3>1.</h3>
+                <p>Select a picture</p>
+            </div>
+            {{ generate_nonogram_form.image(class_="file_input", onchange="uploading()") }}
+            <label for="image" id="file_label">Choose a file...</label>
+            {% if generate_nonogram_form.image.errors %}
+            <ul class="errors">
+                {% for error in generate_nonogram_form.image.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </fieldset>
+
+        <fieldset class="form-field">
+            <div class="info">
+                <h3>2.</h3>
+                <p>What is the desired width?</p>
+            </div>
+            {{ generate_nonogram_form.width }}
+            {% if generate_nonogram_form.width.errors %}
+            <ul class="errors">
+                {% for error in generate_nonogram_form.width.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </fieldset>
+
+        <fieldset class="form-field">
+            <div class="info">
+                <h3>3.</h3>
+                <p>What is the desired height?</p>
+            </div>
+            {{ generate_nonogram_form.height }}
+            {% if generate_nonogram_form.height.errors %}
+            <ul class="errors">
+                {% for error in generate_nonogram_form.height.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </fieldset>
+
+        <fieldset class="form-field">
+            <div class="info">
+                <h3>4.</h3>
+                <p>Should the nonogram be in colour?</p>
+            </div>
+            <div class="input_div">
+                {{ generate_nonogram_form.colour(class_="boolean_input") }}
+                <label class="bool_label">Yes</label>
+            </div>
+            {% if generate_nonogram_form.colour.errors %}
+            <ul class="errors">
+                {% for error in generate_nonogram_form.colour.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </fieldset>
+
         {{ generate_nonogram_form.submit }}
+
     </form>
 </div>
 {% endblock %}
