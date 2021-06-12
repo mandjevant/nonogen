@@ -1,4 +1,7 @@
 # Nonogen
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e9b5dd6e687742d3a6eeba2a8c535017)](https://app.codacy.com/gh/mandjevant/nonogen?utm_source=github.com&utm_medium=referral&utm_content=mandjevant/nonogen&utm_campaign=Badge_Grade_Settings)
+
 A nonogram generator with both cli functionality and Flask website.
 
 ## CLI Usage
