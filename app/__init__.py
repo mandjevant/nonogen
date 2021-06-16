@@ -5,10 +5,20 @@ import os
 
 
 class Config:
+    """
+    Class to check conf.ini for existence
+     and load it in
+    """
     conf = None
 
     @staticmethod
     def initiate_config() -> bool:
+        """
+        Initiate configuration by
+         checking if conf.ini exists
+         loading in conf.ini
+        :return: success | bool
+        """
         try:
             Config.conf = configparser.ConfigParser()
             if os.path.exists(os.getcwd() + '\\conf.ini'):
@@ -32,4 +42,4 @@ app.secret_key = Config.conf.get('CONSTANTS', 'SECRET_KEY')
 
 from app import routes, errors
 
-app.run(debug=True)
+app.run()

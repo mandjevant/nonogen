@@ -38,7 +38,6 @@ python3 -m nonogen_cli --img="input_images/cheese.jpg" --size=16x16 --colour
 **Input image**:  
 <img src="nonogen/input_images/cheese.jpg?raw=true" width="300" height="300"> 
 
-
 **Generated nonograms:**
 
 <p float="left">
@@ -52,8 +51,6 @@ python3 -m nonogen_cli --img="input_images/cheese.jpg" --size=16x16 --colour
     <img src="nonogen/solutions/cheese_solution.png?raw=true" width="300" height="300">
     <img src="nonogen/solutions/cheese_colour_solution.png?raw=true" width="300" height="300">
 </p>
-
-
 
 ## Contributing
 

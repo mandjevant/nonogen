@@ -1,3 +1,3 @@
-function delete_flash(flash) {
-    $(flash).parent().remove()
+function deleteFlash(flash) {
+    $(flash).parent().remove();
 }

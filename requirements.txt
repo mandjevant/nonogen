@@ -9,3 +9,4 @@ Pillow==8.2.0
 Werkzeug==1.0.1
 WTForms==2.3.3
 colorthief~=0.2.1
+numpy==1.20.2

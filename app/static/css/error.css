@@ -1,7 +1,7 @@
 .container {
     margin-top: 15%;
     background-color: #c9c9c9;
-    box-shadow: 0 2px 5px rgba(0,0,0,.25), 0 0 16px rgba(0,0,0,.22);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .25), 0 0 16px rgba(0, 0, 0, .22);
     border-radius: 35px;
     padding: 35px;
     display: flex;

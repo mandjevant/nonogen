@@ -1,5 +1,5 @@
 $(function() {
-    $(':checkbox[class="boolean_input"]').click( function () {
+    $(":checkbox[class='boolean_input']").click( function () {
         let element = document.getElementsByClassName("boolean_input")[0];
         if ($(this).is(":checked")) {
             element.style.backgroundColor="#1d72b7";
