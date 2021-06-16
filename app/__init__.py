@@ -32,4 +32,4 @@ app.secret_key = Config.conf.get('CONSTANTS', 'SECRET_KEY')
 
 from app import routes, errors
 
-app.run(debug=True)
+app.run()
