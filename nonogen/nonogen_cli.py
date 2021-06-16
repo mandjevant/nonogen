@@ -21,7 +21,6 @@ def nonogen(img, size, colour):
     """
     Handles cli using click
      calls main class for nonogram generation
-
     :param img: image path | str
     :param size: size of nonogram | str
     :param colour: type of nonogram | bool
