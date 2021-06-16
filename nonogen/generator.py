@@ -10,6 +10,7 @@ import os
 class no_generator:
     """
     Main nonogram generator class
+     used for generating a nonogram
     """
 
     def __init__(self, img_path: str, size: str, colour: bool):
@@ -60,7 +61,7 @@ class no_generator:
             indic_i = list()
             prev_val = None
 
-            for val_index in range(len(i)):
+            for val_index, _ in enumerate(i):
                 if i[val_index] in [(255, 255, 255), 255]:
                     prev_val = None
                 else:
@@ -94,7 +95,7 @@ class no_generator:
         palette = ColorThief(self._img_path).get_palette(color_count=5)
         palette.append((255, 255, 255))
         for row in self._pixels:
-            for i in range(len(row)):
+            for i, _ in enumerate(row):
                 distances = [no_generator.color_distance(numpy.array(row[i]), color) for color in palette]
                 row[i] = palette[distances.index(min(distances))]
 
@@ -416,16 +417,13 @@ class no_generator:
             for column_index in range(len(self._pixels[row_index])):
                 if self._pixels[row_index][column_index] != 255 and \
                         self._pixels[row_index][column_index] != (255, 255, 255):
+                    fill = (0, 0, 0)
                     if self._colour:
-                        draw.rectangle([(self._m + column_index * self._m, self._m + row_index * self._m),
-                                        (self._m + column_index * self._m + self._m,
-                                         self._m + row_index * self._m + self._m)],
-                                       fill=self._pixels[row_index][column_index])
-                    else:
-                        draw.rectangle([(self._m + column_index * self._m, self._m + row_index * self._m),
-                                        (self._m + column_index * self._m + self._m,
-                                         self._m + row_index * self._m + self._m)],
-                                       fill=(0, 0, 0))
+                        fill = self._pixels[row_index][column_index]
+                    draw.rectangle([(self._m + column_index * self._m, self._m + row_index * self._m),
+                                    (self._m + column_index * self._m + self._m,
+                                     self._m + row_index * self._m + self._m)],
+                                   fill=fill)
         del draw
 
     def _save_nonogram(self) -> None:
