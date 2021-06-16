@@ -1,10 +1,10 @@
 window.uploading = function() {
-	const input_element = document.getElementById("image");
-	const label_element = document.getElementById("file_label");
-	if (input_element.value === "") {
-		label_element.innerHTML = "Choose file ...";
+	const inputElement = document.getElementById("image");
+	const labelElement = document.getElementById("file_label");
+	if (inputElement.value === "") {
+		labelElement.innerHTML = "Choose file ...";
 	} else {
-		const theSplit = input_element.value.split("\\");
-		label_element.innerHTML = theSplit[theSplit.length - 1];
+		const theSplit = inputElement.value.split("\\");
+		labelElement.innerHTML = theSplit[theSplit.length - 1];
 	}
 };
