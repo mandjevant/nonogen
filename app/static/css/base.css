@@ -11,7 +11,7 @@ body {
     z-index: 10;
     display: flex;
     background-color: #2f86ce;
-    box-shadow: 0 2px 5px rgba(0,0,0,.25), 0 0 16px rgba(0,0,0,.22);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .25), 0 0 16px rgba(0, 0, 0, .22);
     border-radius: 35px;
     padding: 65px;
     color: white;
@@ -22,7 +22,6 @@ body {
     font-size: large;
     flex-direction: column;
 }
-
 
 .close {
     z-index: inherit;
@@ -44,14 +43,11 @@ body {
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-evenly;
-
     position: fixed;
     background-color: #c9c9c9;
-
     bottom: 0;
     height: 8vw;
     width: 100%;
-
     text-align: left;
 }
 
@@ -112,17 +108,14 @@ body {
     display: flex;
     flex-direction: column;
     flex-shrink: initial;
-
     width: 35px;
     height: 35px;
     cursor: pointer;
     background-color: #33383b;
     border-radius: 2px;
-
     color: #ffffff;
     align-items: center;
     justify-content: center;
-
     margin-right: 3px;
     margin-bottom: 5px;
 }
