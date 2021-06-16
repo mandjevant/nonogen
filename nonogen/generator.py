@@ -46,7 +46,7 @@ class no_generator:
         :param arr: two-dimensional array | list
         :return: transposed array | list
         """
-        return [[arr[j][i] for j in range(len(arr))] for i in range(len(arr[0]))]
+        return [[arr[j][i] for j, _ in enumerate(arr)] for i, _ in enumerate(arr[0])]
 
     @staticmethod
     def _gen_indic_values(cleaned_list: list) -> list:
@@ -104,7 +104,7 @@ class no_generator:
         Rebase the black and white pixel matrix
         """
         for row in self._pixels:
-            for i in range(len(row)):
+            for i, _ in enumerate(row):
                 distance = abs(no_generator.color_distance(numpy.array(row[i]), numpy.array((255, 255, 255))))
                 if distance < 64:
                     row[i] = (255, 255, 255)
@@ -189,7 +189,7 @@ class no_generator:
         Convert pixel matrix to greyscale
         """
         for row in self._pixels:
-            for i in range(len(row)):
+            for i, _ in enumerate(row):
                 if row[i] not in [(255, 255, 255), 255]:
                     row[i] = (0, 0, 0)
 
@@ -256,7 +256,7 @@ class no_generator:
 
                     box_counter += 1
 
-                for y in range(len(column[::-1])):
+                for y, _ in enumerate(column[::-1]):
                     min_x = 1 + self._m + w_off + column_counter * self._m
                     min_y = self._m + h_off - y * self._m
                     rect_fill = column[::-1][y][1] if self._colour else (240, 240, 240)
@@ -327,7 +327,7 @@ class no_generator:
 
                     box_counter += 1
 
-                for y in range(len(row[::-1])):
+                for y, _ in enumerate(row[::-1]):
                     min_x = 1 + self._m + w_off - y * self._m
                     min_y = self._m + h_off + row_counter * self._m
                     rect_fill = row[::-1][y][1] if self._colour else (240, 240, 240)
@@ -413,8 +413,8 @@ class no_generator:
         """
         draw = ImageDraw.Draw(self._solution, mode="RGB")
 
-        for row_index in range(len(self._pixels)):
-            for column_index in range(len(self._pixels[row_index])):
+        for row_index, _ in enumerate(self._pixels):
+            for column_index, _ in enumerate(self._pixels[row_index]):
                 if self._pixels[row_index][column_index] != 255 and \
                         self._pixels[row_index][column_index] != (255, 255, 255):
                     fill = (0, 0, 0)

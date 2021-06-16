@@ -93,7 +93,7 @@ h1 {
 
 .boolean_input {
     -moz-appearance: none;
-    box-shadow: inset 0 1px 2px #C8C8BE;
+    box-shadow: inset 0 1px 2px #c8c8be;
     height: 25px;
     width: 25px;
     background: #eee;
@@ -168,11 +168,11 @@ fieldset {
 }
 
 [type="file"]:focus + label {
-  outline: 1px dotted #000;
+    outline: 1px dotted #000;
 }
 
 [type="submit"]:focus {
-  outline: 1px dotted #000;
+    outline: 1px dotted #000;
 }
 
 @media screen and (max-width: 2000px) {
